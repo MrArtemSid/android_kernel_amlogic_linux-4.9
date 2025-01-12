@@ -46,7 +46,7 @@
 
 	memory@00000000 {
 		device_type = "memory";
-		linux,usable-memory = <0x0 0x000000 0x0 0x80000000>;
+		linux,usable-memory = <0x0 0x000000 0x0 0xed800000>;
 	};
 
 	reserved-memory {
@@ -141,14 +141,6 @@
 			alignment = <0x0 0x100000>;
 			//no-map;
 		};
-		/*  vdin0 CMA pool */
-		vdin0_cma_reserved:linux,vdin0_cma {
-			compatible = "shared-dma-pool";
-			reusable;
-		/* 1920x1080x2x4  =16+4 M */
-			size = <0x0 0x04000000>;
-			alignment = <0x0 0x400000>;
-		};
 		/*  vdin1 CMA pool */
 		vdin1_cma_reserved:linux,vdin1_cma {
 			compatible = "shared-dma-pool";
@@ -177,30 +169,11 @@
 
 	gpioleds {
 		compatible = "gpio-leds";
-		status = "disabled";
-
-		net_red {
-			label="net_red";
-			/*gpios=<&gpio GPIOA_14 GPIO_ACTIVE_LOW>;*/
-			default-state ="on";
-		};
-
-		net_green {
-			label="net_green";
-			/*gpios=<&gpio GPIOA_15 GPIO_ACTIVE_HIGH>;*/
-			default-state ="on";
-		};
-
-		remote_led {
-			label = "remote_led";
-			gpios = <&gpio_ao GPIOAO_10 GPIO_ACTIVE_LOW>;
-			default-state = "off";
-			linux,default-trigger = "rc_feedback";
-		};
+		status = "okay";
 
 		sys_led {
 			label="sys_led";
-			gpios=<&gpio_ao GPIOAO_11 GPIO_ACTIVE_LOW>;
+			gpios=<&gpio_ao GPIOAO_11 GPIO_ACTIVE_HIGH>;
 			default-state ="on";
 		};
 	};
@@ -357,85 +330,6 @@
 		nrds-enable = <1>;
 		pps-enable = <1>;
 	};
-	dvb_avl6762 {
-		compatible = "amlogic, dvb";
-		dev_name = "dvb";
-		status = "disabled";
-		fe0_mode = "external";
-		fe0_demod = "Avl6762";
-		fe0_i2c_adap_id = <&i2c3>;
-		fe0_demod_i2c_addr = <0x14>;
-		fe0_ts = <0>;
-		fe0_reset_value = <0>;
-		fe0_reset_gpio = <&gpio GPIOZ_10 GPIO_ACTIVE_HIGH>;
-
-		ts0 = "serial";
-		ts0_control = <0x800>;
-		ts0_invert = <0>;
-		interrupts = <0 23 1
-		0 5 1
-		0 53 1
-		0 19 1
-		0 25 1
-		0 18 1
-		0 24 1>;
-		interrupt-names = "demux0_irq",
-		"demux1_irq",
-		"demux2_irq",
-		"dvr0_irq",
-		"dvr1_irq",
-		"dvrfill0_fill",
-		"dvrfill1_flush";
-		pinctrl-names = "s_ts0";
-		pinctrl-0 = <&dvb_s_ts0_pins>;
-		clocks = <&clkc CLKID_DEMUX
-		&clkc CLKID_AHB_ARB0
-		&clkc CLKID_DOS_PARSER>;
-		clock-names = "demux", "ahbarb0", "parser_top";
-	};
-
-	dvb_mn88436 {
-		compatible = "amlogic, dvb";
-		dev_name = "dvb";
-		status = "disabled";
-
-		dtv_demod0 = "Mn88436";
-		dtv_demod0_i2c_adap = <&i2c3>;
-		dtv_demod0_i2c_addr = <0x14>;
-		dtv_demod0_reset_value = <0>;
-		dtv_demod0_reset_gpio = <&gpio_ao GPIOAO_10 GPIO_ACTIVE_HIGH>;
-		dtv_demod0_ant_poweron_value = <0>;
-		dtv_demod0_ant_power_gpio = <&gpio GPIOH_5 GPIO_ACTIVE_HIGH>;
-		dtv_demod0_tuner_type = <52>;
-		fe0_dtv_demod = <0>;
-		fe0_ts  = <0>;
-		fe0_dev = <0>;
-
-
-		ts0 = "serial";
-		ts0_control = <0x800>;
-		ts0_invert = <0>;
-		interrupts = <0 23 1
-		0 5 1
-		0 53 1
-		0 19 1
-		0 25 1
-		0 18 1
-		0 24 1>;
-		interrupt-names = "demux0_irq",
-		"demux1_irq",
-		"demux2_irq",
-		"dvr0_irq",
-		"dvr1_irq",
-		"dvrfill0_fill",
-		"dvrfill1_flush";
-		pinctrl-names = "s_ts0";
-		pinctrl-0 = <&dvb_s_ts0_pins>;
-		clocks = <&clkc CLKID_DEMUX
-		&clkc CLKID_AHB_ARB0
-		&clkc CLKID_DOS_PARSER>;
-		clock-names = "demux", "ahbarb0", "parser_top";
-	};
 
 	ionvideo {
 		compatible = "amlogic, ionvideo";
@@ -481,30 +375,6 @@
 		bt656in1 {
 		bt656_id = <1>;
 		status = "disabled";
-		};
-	};
-
-	aml_cams {
-		compatible = "amlogic, cams_prober";
-		status = "disabled";
-		pinctrl-names="default";
-		pinctrl-0=<&cam_dvp_pins &gen_clk_ee_z>;
-		clocks = <&clkc CLKID_GEN_CLK>;
-		clock-names = "g12a_24m";
-		cam_0{
-			cam_name = "gc2145";
-			front_back = <0>;
-			/*u200 i2c2 gpio conflict with ethmac*/
-			camera-i2c-bus = <&i2c2>;
-			gpio_pwdn-gpios = <&gpio GPIOZ_2 GPIO_ACTIVE_HIGH>;
-			gpio_rst-gpios = <&gpio GPIOZ_12 GPIO_ACTIVE_HIGH>;
-			mirror_flip = <1>;
-			vertical_flip = <1>;
-			spread_spectrum = <0>;
-			bt_path = "gpio";
-			bt_path_count = <1>;
-			vdin_path = <0>;
-			status = "okay";
 		};
 	};
 
@@ -976,6 +846,84 @@
 
 }; /* end of / */
 
+&custom_maps{
+	mapnum = <4>;
+	map0 = <&map_0>;
+	map1 = <&map_1>;
+	map2 = <&map_2>;
+	map3 = <&map_3>;
+
+	map_1: map_1 {
+		mapname = "amlogic-remote-2";
+		customcode = <0xfe01>;
+		release_delay = <0x50>;
+		fn_key_scancode = <0x00>;
+		cursor_left_scancode = <0x51>;
+		cursor_right_scancode = <0x50>;
+		cursor_up_scancode = <0x16>;
+		cursor_down_scancode = <0x1a>;
+		cursor_ok_scancode = <0x13>;
+		size = <0x1c>;
+		keymap = <
+			REMOTE_KEY(0x4e, 0x02)
+			REMOTE_KEY(0xd, 0x03)
+			REMOTE_KEY(0xc, 0x04)
+			REMOTE_KEY(0x4a, 0x05)
+			REMOTE_KEY(0x9, 0x06)
+			REMOTE_KEY(0x8, 0x07)
+			REMOTE_KEY(0x46, 0x08)
+			REMOTE_KEY(0x50, 0x09)
+			REMOTE_KEY(0x4, 0x0a)
+			REMOTE_KEY(0x10, 0x0b)
+			REMOTE_KEY(0x4c, 0x8b)
+			REMOTE_KEY(0x18, 0x73)
+			REMOTE_KEY(0x10, 0x72)
+			REMOTE_KEY(0x11, 0x66)
+			REMOTE_KEY(0x50, 0x6a)
+			REMOTE_KEY(0x51, 0x69)
+			REMOTE_KEY(0x16, 0x67)
+			REMOTE_KEY(0x1a, 0x6c)
+			REMOTE_KEY(0x13, 0x1c)
+			REMOTE_KEY(0x41, 0x71)
+			REMOTE_KEY(0x19, 0x9e)
+			REMOTE_KEY(0x4, 0x74)
+			REMOTE_KEY(0x4b, 0xa8)
+			0x1d0
+			REMOTE_KEY(0x4f, 0xd0)
+			REMOTE_KEY(0x42, 0x0e)
+			REMOTE_KEY(0x43, 0x57)
+			REMOTE_KEY(0xf, 0x58)
+			>;
+	};
+
+	map_3: map_3 {
+		mapname = "amlogic-remote-4";
+		customcode = <0x7f80>;
+		release_delay = <0x50>;
+		fn_key_scancode = <0x48>;
+		cursor_left_scancode = <0x37>;
+		cursor_right_scancode = <0x39>;
+		cursor_up_scancode = <0x38>;
+		cursor_down_scancode = <0x40>;
+		cursor_ok_scancode = <0x13>;
+		size = <0x0c>;
+		keymap = <
+			REMOTE_KEY(0x83, 0x8b)
+			REMOTE_KEY(0x87, 0x73)
+			REMOTE_KEY(0x89, 0x72)
+			REMOTE_KEY(0x73, 0x66)
+			REMOTE_KEY(0x39, 0x6a)
+			REMOTE_KEY(0x37, 0x69)
+			REMOTE_KEY(0x38, 0x67)
+			REMOTE_KEY(0x40, 0x6c)
+			REMOTE_KEY(0x13, 0x1c)
+			REMOTE_KEY(0x27, 0x9e)
+			REMOTE_KEY(0x81, 0x74)
+			REMOTE_KEY(0x48, 0x1d0)
+			>;
+	};
+};
+
 &vddcpu0 {
 	pwms = <&pwm_AO_cd MESON_PWM_1 1250 0>;
 	regulator-min-microvolt = <720000>;
@@ -1029,61 +977,23 @@
 };
 
 &i2c0 {
-	status = "okay";
-	pinctrl-names="default";
-	pinctrl-0=<&i2c0_master_pins2>;
-	clock-frequency = <400000>;
-
-	gt9xx@5d {
-		compatible = "goodix,gt9xx";
-		status = "disabled";
-		reg = <0x5d>;
-		reset-gpio = <&gpio GPIOZ_9 0x00>;
-		irq-gpio = <&gpio GPIOZ_3 0x00>;
-	};
-
-	ftxx@38 {
-		compatible = "focaltech,fts";
-		status = "disabled";
-		reg = <0x38>;
-		reset-gpio = <&gpio GPIOZ_9 0x00>;
-		irq-gpio = <&gpio GPIOZ_3 0x00>;
-		x_max = <600>;
-		y_max = <1024>;
-		max-touch-number = <10>;
-	};
+	status = "disabled";
 };
 
-/*&i2c2 {
- *	status = "okay";
- *	pinctrl-names="default";
- *	pinctrl-0=<&i2c2_master_pins2>;
- *	clock-frequency = <300000>;
- *};
- */
+&i2c1 {
+	status = "disabled";
+};
+
+&i2c2 {
+	status = "disabled";
+};
 
 &i2c3 {
-	status = "ok";
-	pinctrl-names="default";
-	pinctrl-0=<&i2c3_master_pins2>;
-	clock-frequency = <300000>; /* default 100k */
+	status = "disabled";
+};
 
-	/* for ref board */
-	ad82584f_62: ad82584f_62@62 {
-		compatible = "ESMT, ad82584f";
-		#sound-dai-cells = <0>;
-		reg = <0x31>;
-		status = "disabled";
-		reset_pin = <&gpio GPIOA_5 0>;
-		no_mclk;
-	};
-
-	bl_extern_i2c {
-		compatible = "bl_extern, i2c";
-		dev_name = "lp8556";
-		reg = <0x2c>;
-		status = "disabled";
-	};
+&i2c_AO {
+	status = "disabled";
 };
 
 &audiobus {
@@ -1279,7 +1189,7 @@
 		 *	LOOPBACK, 7
 		 */
 		resample_module = <4>;
-		status = "disabled";
+		status = "okay";
 	};
 
 	vad:vad {
@@ -1507,9 +1417,9 @@
 	tdmout_c:tdmout_c {
 		mux { /* GPIOA_12, GPIOA_13 */
 			groups = "tdmc_sclk_a",
-				"tdmc_fs_a"
-				/*, "tdmc_dout0_a"
-				 *,	"tdmc_dout2"
+				"tdmc_fs_a",
+				"tdmc_dout0_a"
+				/*,	"tdmc_dout2"
 				 *, "tdmc_dout3"
 				 */;
 			function = "tdmc_out";
@@ -1584,15 +1494,6 @@
 
 }; /* end of pinctrl_periphs */
 
-//&pinctrl_aobus {
-//	spdifout: spdifout {
-//		mux { /* gpiao_10 */
-//			groups = "spdif_out_ao";
-//			function = "spdif_out_ao";
-//		};
-//	};
-//};  /* end of pinctrl_aobus */
-
 &audio_data {
 	status = "okay";
 };
@@ -1623,13 +1524,17 @@
 	/** 0: normal, 1: otg+dwc3 host only, 2: otg+dwc3 device only*/
 	controller-type = <1>;
 };
+
 &ethmac {
 	status = "okay";
-	pinctrl-names = "internal_eth_pins";
-	pinctrl-0 = <&internal_eth_pins>;
-	mc_val = <0x4be04>;
+	pinctrl-names = "external_eth_pins";
+	pinctrl-0 = <&external_eth_pins>;
+	mc_val = <0x1621>;
 
-	internal_phy=<1>;
+	internal_phy=<0>;
+
+	/* reset */
+	rst_pin-gpios = <&gpio GPIOZ_15 GPIO_ACTIVE_LOW>;
 };
 
 &uart_A {
@@ -1638,8 +1543,8 @@
 
 /*if you want to use vdin just modify status to "ok"*/
 &vdin0 {
-	memory-region = <&vdin0_cma_reserved>;
-	status = "okay";
+	/*memory-region = <&vdin0_cma_reserved>;*/
+	status = "disabled";
 	/*vdin write mem color depth support:
 	 *bit0:support 8bit
 	 *bit1:support 9bit
@@ -1651,7 +1556,7 @@
 };
 &vdin1 {
 	memory-region = <&vdin1_cma_reserved>;
-	status = "okay";
+	status = "disabled";
 	/*vdin write mem color depth support:
 	 *bit0:support 8bit
 	 *bit1:support 9bit
