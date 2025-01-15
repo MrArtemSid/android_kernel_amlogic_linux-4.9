@@ -178,6 +178,18 @@
 		};
 	};
 
+	openvfd {
+		compatible = "open,vfd";
+		dev_name = "openvfd";
+		status = "okay";
+		openvfd_gpio_clk = <&gpio GPIOA_15 GPIO_ACTIVE_HIGH>;
+		openvfd_gpio_dat = <&gpio GPIOA_14 GPIO_ACTIVE_HIGH>;
+		openvfd_gpio_stb = <0x0 0x0 0xff>;
+		openvfd_chars = /bits/ 8 <0x00 0x04 0x03 0x02 0x01>;
+		openvfd_dot_bits = /bits/ 8 <0x00 0x01 0x03 0x02 0x04 0x05 0x06>;
+		openvfd_display_type = /bits/ 32 <0x06000000>;
+	};
+
 	cvbsout {
 		compatible = "amlogic, cvbsout-sm1";
 		dev_name = "cvbsout";
