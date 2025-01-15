@@ -1,0 +1,1 @@
+obj-$(CONFIG_AMLOGIC_FD628)	+= meson64_cpu.o

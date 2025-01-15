@@ -1,0 +1,5 @@
+menuconfig AMLOGIC_FD628
+    bool "Driver for Amlogic FD628 display"
+    default n
+    help
+      This is driver for Amlogic FD628 display

@@ -160,5 +160,7 @@ source "drivers/amlogic/dvb/Kconfig"
 
 source "drivers/amlogic/soc_info/Kconfig"
 
+source "drivers/amlogic/fdchip/Kconfig"
+
 endmenu
 endif

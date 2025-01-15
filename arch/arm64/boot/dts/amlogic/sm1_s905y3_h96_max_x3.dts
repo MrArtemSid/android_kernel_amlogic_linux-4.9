@@ -175,6 +175,13 @@
 		status = "disabled";
 	};
 
+	fd628_dev {
+		compatible = "amlogic,fd628_dev";
+		fd628_gpio_clk = <&gpio 0x41 GPIO_ACTIVE_HIGH>;
+		fd628_gpio_dat = <&gpio 0x40 GPIO_ACTIVE_HIGH>;
+		status = "okay";
+	};	
+
 	gpioleds {
 		compatible = "gpio-leds";
 		status = "okay";
