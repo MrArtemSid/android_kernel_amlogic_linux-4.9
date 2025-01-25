@@ -46,7 +46,7 @@
 
 	memory@00000000 {
 		device_type = "memory";
-		linux,usable-memory = <0x0 0x000000 0x0 0xf0000000>;
+		linux,usable-memory = <0x0 0x000000 0x0 0xd8000000>;
 	};
 
 	reserved-memory {
@@ -326,6 +326,7 @@
 		nrds-enable = <1>;
 		pps-enable = <1>;
 	};
+
 	deinterlace {
 		compatible = "amlogic, deinterlace";
 		status = "disable";//status = "okay";
@@ -349,85 +350,6 @@
 		nr10bit-support = <1>;
 		nrds-enable = <1>;
 		pps-enable = <1>;
-	};
-	dvb_avl6762 {
-		compatible = "amlogic, dvb";
-		dev_name = "dvb";
-		status = "disabled";
-		fe0_mode = "external";
-		fe0_demod = "Avl6762";
-		fe0_i2c_adap_id = <&i2c3>;
-		fe0_demod_i2c_addr = <0x14>;
-		fe0_ts = <0>;
-		fe0_reset_value = <0>;
-		fe0_reset_gpio = <&gpio GPIOZ_10 GPIO_ACTIVE_HIGH>;
-
-		ts0 = "serial";
-		ts0_control = <0x800>;
-		ts0_invert = <0>;
-		interrupts = <0 23 1
-		0 5 1
-		0 53 1
-		0 19 1
-		0 25 1
-		0 18 1
-		0 24 1>;
-		interrupt-names = "demux0_irq",
-		"demux1_irq",
-		"demux2_irq",
-		"dvr0_irq",
-		"dvr1_irq",
-		"dvrfill0_fill",
-		"dvrfill1_flush";
-		pinctrl-names = "s_ts0";
-		pinctrl-0 = <&dvb_s_ts0_pins>;
-		clocks = <&clkc CLKID_DEMUX
-		&clkc CLKID_AHB_ARB0
-		&clkc CLKID_DOS_PARSER>;
-		clock-names = "demux", "ahbarb0", "parser_top";
-	};
-
-	dvb_mn88436 {
-		compatible = "amlogic, dvb";
-		dev_name = "dvb";
-		status = "disabled";
-
-		dtv_demod0 = "Mn88436";
-		dtv_demod0_i2c_adap = <&i2c3>;
-		dtv_demod0_i2c_addr = <0x14>;
-		dtv_demod0_reset_value = <0>;
-		dtv_demod0_reset_gpio = <&gpio_ao GPIOAO_10 GPIO_ACTIVE_HIGH>;
-		dtv_demod0_ant_poweron_value = <0>;
-		dtv_demod0_ant_power_gpio = <&gpio GPIOH_5 GPIO_ACTIVE_HIGH>;
-		dtv_demod0_tuner_type = <52>;
-		fe0_dtv_demod = <0>;
-		fe0_ts  = <0>;
-		fe0_dev = <0>;
-
-
-		ts0 = "serial";
-		ts0_control = <0x800>;
-		ts0_invert = <0>;
-		interrupts = <0 23 1
-		0 5 1
-		0 53 1
-		0 19 1
-		0 25 1
-		0 18 1
-		0 24 1>;
-		interrupt-names = "demux0_irq",
-		"demux1_irq",
-		"demux2_irq",
-		"dvr0_irq",
-		"dvr1_irq",
-		"dvrfill0_fill",
-		"dvrfill1_flush";
-		pinctrl-names = "s_ts0";
-		pinctrl-0 = <&dvb_s_ts0_pins>;
-		clocks = <&clkc CLKID_DEMUX
-		&clkc CLKID_AHB_ARB0
-		&clkc CLKID_DOS_PARSER>;
-		clock-names = "demux", "ahbarb0", "parser_top";
 	};
 
 	ionvideo {
@@ -803,7 +725,7 @@
 			/* suffix-name, sync with android audio hal
 			 * what's the dai link used for
 			 */
-			suffix-name = "alsaPORT-pdm";
+			suffix-name = "alsaPORT-pdm-builtinmic";
 			cpu {
 				sound-dai = <&pdm>;
 			};
@@ -1075,11 +997,23 @@
 		status = "okay";
 };
 
+&i2c0 {
+	status = "disabled";
+};
+
+&i2c1 {
+	status = "disabled";
+};
+
 &i2c2 {
 	status = "disabled";
 };
 
 &i2c3 {
+	status = "disabled";
+};
+
+&i2c_AO {
 	status = "disabled";
 };
 
@@ -1504,9 +1438,9 @@
 	tdmout_c:tdmout_c {
 		mux { /* GPIOA_12, GPIOA_13 */
 			groups = "tdmc_sclk_a",
-				"tdmc_fs_a"
-				/*, "tdmc_dout0_a"
-				 *,	"tdmc_dout2"
+				 "tdmc_fs_a",
+				 "tdmc_dout0_a"
+				/*, "tdmc_dout2"
 				 *, "tdmc_dout3"
 				 */;
 			function = "tdmc_out";
