@@ -46,7 +46,7 @@
 
 	memory@00000000 {
 		device_type = "memory";
-		linux,usable-memory = <0x0 0x000000 0x0 0xd8000000>;
+		linux,usable-memory = <0x0 0x000000 0x0 0xed800000>;
 	};
 
 	reserved-memory {
@@ -140,14 +140,6 @@
 			size = <0x0 0x0>;
 			alignment = <0x0 0x100000>;
 			//no-map;
-		};
-		/*  vdin0 CMA pool */
-		vdin0_cma_reserved:linux,vdin0_cma {
-			compatible = "shared-dma-pool";
-			reusable;
-		/* 1920x1080x2x4  =16+4 M */
-			size = <0x0 0x04000000>;
-			alignment = <0x0 0x400000>;
 		};
 		/*  vdin1 CMA pool */
 		vdin1_cma_reserved:linux,vdin1_cma {
@@ -719,21 +711,6 @@
 				sound-dai = <&dummy_codec>;
 			};
 		};
-
-		aml-audio-card,dai-link@3 {
-			mclk-fs = <64>;
-			/* suffix-name, sync with android audio hal
-			 * what's the dai link used for
-			 */
-			suffix-name = "alsaPORT-pdm-builtinmic";
-			cpu {
-				sound-dai = <&pdm>;
-			};
-			codec {
-				sound-dai = <&pdm_codec>;
-			};
-		};
-
 		aml-audio-card,dai-link@4 {
 			mclk-fs = <128>;
 			/* suffix-name, sync with android audio hal used for */
@@ -1572,8 +1549,8 @@
 
 /*if you want to use vdin just modify status to "ok"*/
 &vdin0 {
-	memory-region = <&vdin0_cma_reserved>;
-	status = "okay";
+	// memory-region = <&vdin0_cma_reserved>;
+	status = "disabled";
 	/*vdin write mem color depth support:
 	 *bit0:support 8bit
 	 *bit1:support 9bit
@@ -1585,7 +1562,7 @@
 };
 &vdin1 {
 	memory-region = <&vdin1_cma_reserved>;
-	status = "okay";
+	status = "disabled";
 	/*vdin write mem color depth support:
 	 *bit0:support 8bit
 	 *bit1:support 9bit
