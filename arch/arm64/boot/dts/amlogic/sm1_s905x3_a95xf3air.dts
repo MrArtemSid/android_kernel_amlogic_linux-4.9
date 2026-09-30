@@ -181,18 +181,10 @@
 		compatible = "gpio-leds";
 		status = "okay";
 
-		remote_led {
-			label = "remote_led";
-			gpios = <&gpio_ao GPIOAO_2 GPIO_ACTIVE_LOW>;
-			default-state = "off";
-			linux,default-trigger = "rc_feedback";
-		};
-
 		sys_led {
 			label="sys_led";
-			gpios=<&gpio_ao GPIOAO_11 GPIO_ACTIVE_LOW>;
+			gpios=<&gpio_ao GPIOAO_11 GPIO_ACTIVE_HIGH>;
 			default-state ="on";
-			linux,default-trigger = "timer";
 		};
 	};
 
@@ -240,16 +232,15 @@
 	bt-dev{
 		compatible = "amlogic, bt-dev";
 		dev_name = "bt-dev";
-		status = "disabled";
+		status = "okay";
 		gpio_reset = <&gpio       GPIOX_17       GPIO_ACTIVE_HIGH>;
 		gpio_hostwake = <&gpio       GPIOX_19       GPIO_ACTIVE_HIGH>;
-		gpio_btwakeup = <&gpio  GPIOX_18        GPIO_ACTIVE_HIGH>;
 	};
 
 	wifi{
 		compatible = "amlogic, aml_wifi";
 		dev_name = "aml_wifi";
-		status = "disabled";
+		status = "okay";
 		interrupt_pin = <&gpio       GPIOX_7       GPIO_ACTIVE_HIGH>;
 		irq_trigger_type = "GPIO_IRQ_LOW";
 		power_on_pin = <&gpio       GPIOX_6       GPIO_ACTIVE_HIGH>;
@@ -500,17 +491,6 @@
 		};
 	};
 
-	gpio_keypad{
-		compatible = "amlogic, gpio_keypad";
-		status = "okay";
-		scan_period = <20>;
-		key_num = <1>;
-		key_name = "power";
-		key_code = <116>;
-		key-gpios = <&gpio_ao  GPIOAO_3  GPIO_ACTIVE_HIGH>;
-		detect_mode = <0>;/*0:polling mode, 1:irq mode*/
-	};
-
 	unifykey{
 		compatible = "amlogic, unifykey";
 		status = "ok";
@@ -710,7 +690,7 @@
 		reg = <0x0 0xFF632000 0x0 0x2000>;
 		is_auge_used = <1>; /* meson or auge chipset used */
 		tocodec_inout = <1>;
-		tdmout_index = <2>;
+		tdmout_index = <1>;
 		ch0_sel = <0>;
 		ch1_sel = <1>;
 
@@ -952,23 +932,15 @@
 		};
 		opp07 {
 			opp-hz = /bits/ 64 <1500000000>;
-			opp-microvolt = <830000>;
+			opp-microvolt = <860000>;
 		};
 		opp08 {
 			opp-hz = /bits/ 64 <1608000000>;
-			opp-microvolt = <860000>;
+			opp-microvolt = <900000>;
 		};
 		opp09 {
 			opp-hz = /bits/ 64 <1704000000>;
-			opp-microvolt = <900000>;
-		};
-		opp10 {
-			opp-hz = /bits/ 64 <1800000000>;
 			opp-microvolt = <940000>;
-		};
-		opp11 {
-			opp-hz = /bits/ 64 <1908000000>;
-			opp-microvolt = <1000000>;
 		};
 	};
 
@@ -985,70 +957,43 @@
 	mapnum = <1>;
 	map0 = <&map_0>;
 	map_0: map_0{
-		mapname = "amlogic-remote-1";
-		customcode = <0xf708>;
+		mapname = "a95xf3air-remote";
+		customcode = <0xdf00>;
 		release_delay = <80>;
-		size  = <60>;   /*keymap size*/
-		keymap = <REMOTE_KEY(0x10, KEY_0)
-			REMOTE_KEY(0x11, KEY_1)
-			REMOTE_KEY(0x12, KEY_2)
-			REMOTE_KEY(0x13, KEY_3)
-			REMOTE_KEY(0x14, KEY_4)
-			REMOTE_KEY(0x15, KEY_5)
-			REMOTE_KEY(0x16, KEY_6)
-			REMOTE_KEY(0x17, KEY_7)
-			REMOTE_KEY(0x18, KEY_8)
-			REMOTE_KEY(0x19, KEY_9)
-			REMOTE_KEY(0x1f, KEY_REPLY) /*KEY_ENTER*/
-			REMOTE_KEY(0x20, KEY_F3)
-			REMOTE_KEY(0x50, KEY_F4)
-			REMOTE_KEY(0x40, KEY_F5)
-			REMOTE_KEY(0x4d, KEY_F6)
-			REMOTE_KEY(0x96, KEY_F7)
-			REMOTE_KEY(0x29, KEY_F8)
-			REMOTE_KEY(0x77, KEY_F9)
-			REMOTE_KEY(0x78, KEY_F10)
-			REMOTE_KEY(0X88, KEY_F11)
-			REMOTE_KEY(0x30, KEY_BACKSPACE)
-			REMOTE_KEY(0x06, KEY_PROPS)
-			REMOTE_KEY(0x28, KEY_UNDO)
-			REMOTE_KEY(0x00, KEY_UP)
-			REMOTE_KEY(0x01, KEY_DOWN)
-			REMOTE_KEY(0x03, KEY_LEFT)
-			REMOTE_KEY(0x02, KEY_RIGHT)
-			REMOTE_KEY(0x53, KEY_LEFTMETA)
-			REMOTE_KEY(0x51, KEY_PAGEUP)
-			REMOTE_KEY(0x52, KEY_PAGEDOWN)
-			REMOTE_KEY(0x07, KEY_PAUSE)
-			REMOTE_KEY(0x98, KEY_HANGEUL)
-			REMOTE_KEY(0x59, KEY_HANJA)
-			REMOTE_KEY(0x1b, KEY_SCALE)
-			REMOTE_KEY(0x04, KEY_KPCOMMA)
-			REMOTE_KEY(0x0A, KEY_POWER)
-			REMOTE_KEY(0x81, KEY_TAB)
-			REMOTE_KEY(0x0D, KEY_MUTE)
-			REMOTE_KEY(0x0c, KEY_HOMEPAGE)
-			REMOTE_KEY(0x1e, KEY_FRONT)
-			REMOTE_KEY(0x80, KEY_COPY)
-			REMOTE_KEY(0x95, KEY_OPEN)
-			REMOTE_KEY(0x54, KEY_PASTE)
-			REMOTE_KEY(0x79, KEY_FIND)
-			REMOTE_KEY(0x4f, KEY_A)
-			REMOTE_KEY(0x97, KEY_B)
-			REMOTE_KEY(0x92, KEY_C)
-			REMOTE_KEY(0x4c, KEY_D)
-			REMOTE_KEY(0x93, KEY_CUT)
-			REMOTE_KEY(0x1c, KEY_BACK)
-			REMOTE_KEY(0x58, KEY_VOLUMEUP)
-			REMOTE_KEY(0x5d, KEY_VOLUMEDOWN)
-			REMOTE_KEY(0x05, KEY_RED)
-			REMOTE_KEY(0x09, KEY_GREEN)
-			REMOTE_KEY(0x42, KEY_YELLOW)
-			REMOTE_KEY(0x43, KEY_BLUE)
-			REMOTE_KEY(0x1a, KEY_MENU)
-			REMOTE_KEY(0x44, KEY_REWIND)
-			REMOTE_KEY(0x45, KEY_FASTFORWARD)
-			REMOTE_KEY(0x55, KEY_CALC)>;
+		size = <32>;	/*keymap size*/
+		/* keymap from the stock DTB */
+		keymap = <REMOTE_KEY(0x0c, KEY_0)
+			REMOTE_KEY(0x54, KEY_1)
+			REMOTE_KEY(0x16, KEY_2)
+			REMOTE_KEY(0x15, KEY_3)
+			REMOTE_KEY(0x50, KEY_4)
+			REMOTE_KEY(0x12, KEY_5)
+			REMOTE_KEY(0x11, KEY_6)
+			REMOTE_KEY(0x4c, KEY_7)
+			REMOTE_KEY(0x0e, KEY_8)
+			REMOTE_KEY(0x0d, KEY_9)
+			REMOTE_KEY(0x10, KEY_BACKSPACE)
+			REMOTE_KEY(0x1a, KEY_UP)
+			REMOTE_KEY(0x48, KEY_DOWN)
+			REMOTE_KEY(0x47, KEY_LEFT)
+			REMOTE_KEY(0x07, KEY_RIGHT)
+			REMOTE_KEY(0x06, KEY_ENTER)
+			REMOTE_KEY(0x4b, KEY_HANGEUL)
+			REMOTE_KEY(0x4f, KEY_HANJA)
+			REMOTE_KEY(0x1c, KEY_POWER)
+			REMOTE_KEY(0x42, KEY_HOME)
+			REMOTE_KEY(0x0a, KEY_BACK)
+			REMOTE_KEY(0x18, KEY_MENU)
+			REMOTE_KEY(0x5d, KEY_VOLUMEUP)
+			REMOTE_KEY(0x5c, KEY_VOLUMEDOWN)
+			REMOTE_KEY(0x4a, KEY_MUTE)
+			REMOTE_KEY(0x41, KEY_SCROLLLOCK)
+			REMOTE_KEY(0x01, KEY_AUX)
+			REMOTE_KEY(0x09, KEY_AUDIO)
+			REMOTE_KEY(0x5f, KEY_DIRECTORY)
+			REMOTE_KEY(0x5a, KEY_MEMO)
+			REMOTE_KEY(0x19, KEY_CALENDAR)
+			REMOTE_KEY(0x13, KEY_RED)>;
 	};
 };
 
@@ -1498,18 +1443,18 @@
 	};
 
 	tdmb_mclk: tdmb_mclk {
-		mux { /* GPIOAO_9 */
-			groups = "mclk0_ao";
-			function = "mclk0_ao";
+		mux {
+			groups = "mclk0_a";
+			function = "mclk0";
 			drive-strength = <2>;
 		};
 	};
 	tdmout_b: tdmout_b {
-		mux { /* GPIOAO_8, GPIOAO_7, GPIOAO_4 */
-			groups = "tdmb_sclk_ao",
-				"tdmb_fs_ao",
-				"tdmb_dout0_ao";
-			function = "tdmb_out_ao";
+		mux { /* GPIOA_1, GPIOA_2, GPIOA_3 */
+			groups = "tdmb_sclk",
+				"tdmb_fs",
+				"tdmb_dout0";
+			function = "tdmb_out";
 			drive-strength = <2>;
 		};
 	};
@@ -1533,8 +1478,9 @@
 	tdmout_c:tdmout_c {
 		mux { /* GPIOA_12, GPIOA_13 */
 			groups = "tdmc_sclk_a",
-				"tdmc_fs_a"
-				/*, "tdmc_dout0_a"
+				"tdmc_fs_a",
+				"tdmc_dout0_a"
+				/*
 				 *,	"tdmc_dout2"
 				 *, "tdmc_dout3"
 				 */;
@@ -1557,12 +1503,12 @@
 	};
 
 	pdmin: pdmin {
-		mux { /* gpioa_5, gpioa_6, gpioa_7, gpioa_8, gpioa_9*/
-			groups = "pdm_din0_a",
-			"pdm_din1_a",
-			"pdm_din2_a",
-			"pdm_din3_a",
-			"pdm_dclk_a";
+		mux { /* GPIOZ_2, GPIOZ_3, GPIOZ_4, GPIOZ_5, GPIOZ_6 */
+			groups = "pdm_din0_z",
+				"pdm_din1_z",
+				"pdm_din2_z",
+				"pdm_din3_z",
+				"pdm_dclk_z";
 			function = "pdm";
 		};
 	};
@@ -1602,9 +1548,9 @@
 	};
 
 	spdifout: spdifout {
-		mux { /* gpiao_10 */
-			groups = "spdif_out_ao";
-			function = "spdif_out_ao";
+		mux { /* GPIOH_4 */
+			groups = "spdif_out_h";
+			function = "spdif_out";
 		};
 	};
 
@@ -1641,13 +1587,13 @@
 &usb3_phy_v2 {
 	status = "okay";
 	portnum = <1>;
-	otg = <1>;
+	otg = <0>;
 };
 
 &dwc2_a {
 	status = "okay";
 	/** 0: normal, 1: otg+dwc3 host only, 2: otg+dwc3 device only*/
-	controller-type = <3>;
+	controller-type = <1>;
 };
 &ethmac {
 	status = "okay";
@@ -1663,7 +1609,7 @@
 };
 
 &uart_A {
-	status = "disabled";
+	status = "okay";
 };
 
 /*if you want to use vdin just modify status to "ok"*/
@@ -1704,9 +1650,9 @@
 			 "MMC_CAP_ERASE",
 			 "MMC_CAP_CMD23",
 			 "MMC_CAP_DRIVER_TYPE_D";
-		caps2 = "MMC_CAP2_HS200", "MMC_CAP2_HS400";
+		caps2 = "MMC_CAP2_HS200";
 		f_min = <400000>;
-		f_max = <200000000>;
+		f_max = <100000000>;
 	};
 };
 
@@ -1736,7 +1682,7 @@
 			 "MMC_PM_KEEP_POWER",
 			 "MMC_CAP_SDIO_IRQ";
 		f_min = <400000>;
-		f_max = <200000000>;
+		f_max = <130000000>;
 	};
 };
 
