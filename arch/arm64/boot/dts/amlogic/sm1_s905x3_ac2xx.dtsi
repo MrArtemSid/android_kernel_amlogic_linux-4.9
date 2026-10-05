@@ -1,5 +1,8 @@
 /*
- * arch/arm64/boot/dts/amlogic/sm1_s905y3_deadpool.dts
+ * arch/arm64/boot/dts/amlogic/sm1_s905x3_ac2xx.dtsi
+ *
+ * Common parts of S905X3 TV boxes built on the Amlogic AC213/AC214
+ * reference design (A95X F3 Air, H96 Max X3).
  *
  * Copyright (C) 2017 Amlogic, Inc. All rights reserved.
  *
@@ -15,15 +18,10 @@
  *
  */
 
-/dts-v1/;
-
 #include "mesonsm1.dtsi"
 #include "partition_mbox_dynamic_deadpool.dtsi"
-#include "mesonsm1_skt-panel.dtsi"
 
 / {
-	model = "Amlogic";
-	amlogic-dt-id = "sm1_ac213_2g";
 	compatible = "amlogic, g12a";
 	interrupt-parent = <&gic>;
 	#address-cells = <2>;
@@ -46,7 +44,7 @@
 
 	memory@00000000 {
 		device_type = "memory";
-		linux,usable-memory = <0x0 0x000000 0x0 0x80000000>;
+		/* linux,usable-memory is set per board */
 	};
 
 	reserved-memory {
@@ -177,30 +175,11 @@
 
 	gpioleds {
 		compatible = "gpio-leds";
-		status = "disabled";
-
-		net_red {
-			label="net_red";
-			/*gpios=<&gpio GPIOA_14 GPIO_ACTIVE_LOW>;*/
-			default-state ="on";
-		};
-
-		net_green {
-			label="net_green";
-			/*gpios=<&gpio GPIOA_15 GPIO_ACTIVE_HIGH>;*/
-			default-state ="on";
-		};
-
-		remote_led {
-			label = "remote_led";
-			gpios = <&gpio_ao GPIOAO_10 GPIO_ACTIVE_LOW>;
-			default-state = "off";
-			linux,default-trigger = "rc_feedback";
-		};
+		status = "okay";
 
 		sys_led {
 			label="sys_led";
-			gpios=<&gpio_ao GPIOAO_11 GPIO_ACTIVE_LOW>;
+			gpios=<&gpio_ao GPIOAO_11 GPIO_ACTIVE_HIGH>;
 			default-state ="on";
 		};
 	};
@@ -333,109 +312,6 @@
 		nrds-enable = <1>;
 		pps-enable = <1>;
 	};
-	deinterlace {
-		compatible = "amlogic, deinterlace";
-		status = "disable";//status = "okay";
-		/* 0:use reserved; 1:use cma; 2:use cma as reserved */
-		flag_cma = <1>;
-		//memory-region = <&di_reserved>;
-		//memory-region = <&di_cma_reserved>;
-		interrupts = <0 46 1
-				0 40 1>;
-		interrupt-names = "pre_irq", "post_irq";
-		clocks = <&clkc CLKID_VPU_CLKB_TMP_COMP>,
-			<&clkc CLKID_VPU_CLKB_COMP>;
-		clock-names = "vpu_clkb_tmp_composite",
-			"vpu_clkb_composite";
-		clock-range = <334 667>;
-		/* buffer-size = <3621952>;(yuv422 8bit) */
-		buffer-size = <4074560>;/*yuv422 fullpack*/
-		/* reserve-iomap = "true"; */
-		/* if enable nr10bit, set nr10bit-support to 1 */
-		post-wr-support = <1>;
-		nr10bit-support = <1>;
-		nrds-enable = <1>;
-		pps-enable = <1>;
-	};
-	dvb_avl6762 {
-		compatible = "amlogic, dvb";
-		dev_name = "dvb";
-		status = "disabled";
-		fe0_mode = "external";
-		fe0_demod = "Avl6762";
-		fe0_i2c_adap_id = <&i2c3>;
-		fe0_demod_i2c_addr = <0x14>;
-		fe0_ts = <0>;
-		fe0_reset_value = <0>;
-		fe0_reset_gpio = <&gpio GPIOZ_10 GPIO_ACTIVE_HIGH>;
-
-		ts0 = "serial";
-		ts0_control = <0x800>;
-		ts0_invert = <0>;
-		interrupts = <0 23 1
-		0 5 1
-		0 53 1
-		0 19 1
-		0 25 1
-		0 18 1
-		0 24 1>;
-		interrupt-names = "demux0_irq",
-		"demux1_irq",
-		"demux2_irq",
-		"dvr0_irq",
-		"dvr1_irq",
-		"dvrfill0_fill",
-		"dvrfill1_flush";
-		pinctrl-names = "s_ts0";
-		pinctrl-0 = <&dvb_s_ts0_pins>;
-		clocks = <&clkc CLKID_DEMUX
-		&clkc CLKID_AHB_ARB0
-		&clkc CLKID_DOS_PARSER>;
-		clock-names = "demux", "ahbarb0", "parser_top";
-	};
-
-	dvb_mn88436 {
-		compatible = "amlogic, dvb";
-		dev_name = "dvb";
-		status = "disabled";
-
-		dtv_demod0 = "Mn88436";
-		dtv_demod0_i2c_adap = <&i2c3>;
-		dtv_demod0_i2c_addr = <0x14>;
-		dtv_demod0_reset_value = <0>;
-		dtv_demod0_reset_gpio = <&gpio_ao GPIOAO_10 GPIO_ACTIVE_HIGH>;
-		dtv_demod0_ant_poweron_value = <0>;
-		dtv_demod0_ant_power_gpio = <&gpio GPIOH_5 GPIO_ACTIVE_HIGH>;
-		dtv_demod0_tuner_type = <52>;
-		fe0_dtv_demod = <0>;
-		fe0_ts  = <0>;
-		fe0_dev = <0>;
-
-
-		ts0 = "serial";
-		ts0_control = <0x800>;
-		ts0_invert = <0>;
-		interrupts = <0 23 1
-		0 5 1
-		0 53 1
-		0 19 1
-		0 25 1
-		0 18 1
-		0 24 1>;
-		interrupt-names = "demux0_irq",
-		"demux1_irq",
-		"demux2_irq",
-		"dvr0_irq",
-		"dvr1_irq",
-		"dvrfill0_fill",
-		"dvrfill1_flush";
-		pinctrl-names = "s_ts0";
-		pinctrl-0 = <&dvb_s_ts0_pins>;
-		clocks = <&clkc CLKID_DEMUX
-		&clkc CLKID_AHB_ARB0
-		&clkc CLKID_DOS_PARSER>;
-		clock-names = "demux", "ahbarb0", "parser_top";
-	};
 
 	ionvideo {
 		compatible = "amlogic, ionvideo";
@@ -465,58 +341,6 @@
 		dev_name = "vm0";
 		status = "disabled";
 		vm_id = <0>;
-	};
-
-	amvdec_656in {
-		/*bt656 gpio conflict with i2c0*/
-		compatible = "amlogic, amvdec_656in";
-		dev_name = "amvdec_656in";
-		status = "disabled";
-		reg = <0x0 0xffe02000 0x0 0x7c>;
-		clocks = <&clkc CLKID_BT656_COMP>,
-		      <&clkc CLKID_BT656>;
-		clock-names = "cts_bt656_clk1",
-		      "clk_gate_bt656";
-		/* bt656in1, bt656in2 */
-		bt656in1 {
-		bt656_id = <1>;
-		status = "disabled";
-		};
-	};
-
-	aml_cams {
-		compatible = "amlogic, cams_prober";
-		status = "disabled";
-		pinctrl-names="default";
-		pinctrl-0=<&cam_dvp_pins &gen_clk_ee_z>;
-		clocks = <&clkc CLKID_GEN_CLK>;
-		clock-names = "g12a_24m";
-		cam_0{
-			cam_name = "gc2145";
-			front_back = <0>;
-			/*u200 i2c2 gpio conflict with ethmac*/
-			camera-i2c-bus = <&i2c2>;
-			gpio_pwdn-gpios = <&gpio GPIOZ_2 GPIO_ACTIVE_HIGH>;
-			gpio_rst-gpios = <&gpio GPIOZ_12 GPIO_ACTIVE_HIGH>;
-			mirror_flip = <1>;
-			vertical_flip = <1>;
-			spread_spectrum = <0>;
-			bt_path = "gpio";
-			bt_path_count = <1>;
-			vdin_path = <0>;
-			status = "okay";
-		};
-	};
-
-	gpio_keypad{
-		compatible = "amlogic, gpio_keypad";
-		status = "okay";
-		scan_period = <20>;
-		key_num = <1>;
-		key_name = "power";
-		key_code = <116>;
-		key-gpios = <&gpio_ao  GPIOAO_3  GPIO_ACTIVE_HIGH>;
-		detect_mode = <0>;/*0:polling mode, 1:irq mode*/
 	};
 
 	unifykey{
@@ -1028,64 +852,6 @@
 		status = "okay";
 };
 
-&i2c0 {
-	status = "okay";
-	pinctrl-names="default";
-	pinctrl-0=<&i2c0_master_pins2>;
-	clock-frequency = <400000>;
-
-	gt9xx@5d {
-		compatible = "goodix,gt9xx";
-		status = "disabled";
-		reg = <0x5d>;
-		reset-gpio = <&gpio GPIOZ_9 0x00>;
-		irq-gpio = <&gpio GPIOZ_3 0x00>;
-	};
-
-	ftxx@38 {
-		compatible = "focaltech,fts";
-		status = "disabled";
-		reg = <0x38>;
-		reset-gpio = <&gpio GPIOZ_9 0x00>;
-		irq-gpio = <&gpio GPIOZ_3 0x00>;
-		x_max = <600>;
-		y_max = <1024>;
-		max-touch-number = <10>;
-	};
-};
-
-/*&i2c2 {
- *	status = "okay";
- *	pinctrl-names="default";
- *	pinctrl-0=<&i2c2_master_pins2>;
- *	clock-frequency = <300000>;
- *};
- */
-
-&i2c3 {
-	status = "ok";
-	pinctrl-names="default";
-	pinctrl-0=<&i2c3_master_pins2>;
-	clock-frequency = <300000>; /* default 100k */
-
-	/* for ref board */
-	ad82584f_62: ad82584f_62@62 {
-		compatible = "ESMT, ad82584f";
-		#sound-dai-cells = <0>;
-		reg = <0x31>;
-		status = "disabled";
-		reset_pin = <&gpio GPIOA_5 0>;
-		no_mclk;
-	};
-
-	bl_extern_i2c {
-		compatible = "bl_extern, i2c";
-		dev_name = "lp8556";
-		reg = <0x2c>;
-		status = "disabled";
-	};
-};
-
 &audiobus {
 	tdma: tdm@0 {
 		compatible = "amlogic, sm1-snd-tdma";
@@ -1253,33 +1019,16 @@
 			"pdm_dclk",
 			"pdm_sysclk";
 
-		pinctrl-names = "pdm_pins";
-		pinctrl-0 = <&pdmin>;
+		/*
+		 * No PDM microphone on these boxes. The GPIOZ PDM pins would
+		 * collide with the RGMII pins of an external PHY, so leave
+		 * them unmuxed.
+		 */
 
 		/* mode 0~4, defalut:1 */
 		filter_mode = <1>;
 
 		status = "okay";
-	};
-
-	asrca: resample@0 {
-		compatible = "amlogic, sm1-resample";
-		clocks = <&clkc CLKID_MPLL3
-				&clkaudio CLKID_AUDIO_MCLK_F
-				&clkaudio CLKID_AUDIO_RESAMPLE_A>;
-		clock-names = "resample_pll", "resample_src", "resample_clk";
-		/*same with toddr_src
-		 *	TDMIN_A, 0
-		 *	TDMIN_B, 1
-		 *	TDMIN_C, 2
-		 *	SPDIFIN, 3
-		 *	PDMIN,  4
-		 *	NONE,
-		 *	TDMIN_LB, 6
-		 *	LOOPBACK, 7
-		 */
-		resample_module = <4>;
-		status = "disabled";
 	};
 
 	vad:vad {
@@ -1507,11 +1256,8 @@
 	tdmout_c:tdmout_c {
 		mux { /* GPIOA_12, GPIOA_13 */
 			groups = "tdmc_sclk_a",
-				"tdmc_fs_a"
-				/*, "tdmc_dout0_a"
-				 *,	"tdmc_dout2"
-				 *, "tdmc_dout3"
-				 */;
+				"tdmc_fs_a",
+				"tdmc_dout0_a";
 			function = "tdmc_out";
 		};
 	};
@@ -1530,51 +1276,6 @@
 		};
 	};
 
-	pdmin: pdmin {
-		mux { /* GPIOZ_2, GPIOZ_3, GPIOZ_4, GPIOZ_5, GPIOZ_6 */
-			groups = "pdm_din0_z",
-				"pdm_din1_z",
-				"pdm_din2_z",
-				"pdm_din3_z",
-				"pdm_dclk_z";
-			function = "pdm";
-		};
-	};
-
-	bl_pwm_off_pins:bl_pwm_off_pin {
-		mux {
-			pins = "GPIOH_5";
-			function = "gpio_periphs";
-			output-high;
-		};
-	};
-
-	clk12_24_z_pins:clk12_24_z_pins {
-		mux {
-			groups = "clk12_24_z";
-			function = "clk12_24_ee";
-			drive-strength = <3>;
-		};
-	};
-
-	gen_clk_ee_z: gen_clk_ee_z {
-		mux {
-			groups="gen_clk_ee_z";
-			function="gen_clk_ee";
-			drive-strength = <3>;
-		};
-	};
-
-	cam_dvp_pins:cam_dvp_pins {
-		mux {
-			groups = "bt656_a_vs", "bt656_a_hs", "bt656_a_clk",
-				"bt656_a_din0", "bt656_a_din1", "bt656_a_din2",
-				"bt656_a_din3", "bt656_a_din4", "bt656_a_din5",
-				"bt656_a_din6", "bt656_a_din7";
-			function = "bt656";
-		};
-	};
-
 	spdifout: spdifout {
 		mux { /* GPIOH_4 */
 			groups = "spdif_out_h";
@@ -1583,15 +1284,6 @@
 	};
 
 }; /* end of pinctrl_periphs */
-
-//&pinctrl_aobus {
-//	spdifout: spdifout {
-//		mux { /* gpiao_10 */
-//			groups = "spdif_out_ao";
-//			function = "spdif_out_ao";
-//		};
-//	};
-//};  /* end of pinctrl_aobus */
 
 &audio_data {
 	status = "okay";
@@ -1622,14 +1314,6 @@
 	status = "okay";
 	/** 0: normal, 1: otg+dwc3 host only, 2: otg+dwc3 device only*/
 	controller-type = <1>;
-};
-&ethmac {
-	status = "okay";
-	pinctrl-names = "internal_eth_pins";
-	pinctrl-0 = <&internal_eth_pins>;
-	mc_val = <0x4be04>;
-
-	internal_phy=<1>;
 };
 
 &uart_A {
@@ -1710,73 +1394,6 @@
 	};
 };
 
-&nand {
-	status = "disabled";
-	plat-names = "bootloader","nandnormal";
-	plat-num = <2>;
-	plat-part-0 = <&bootloader>;
-	plat-part-1 = <&nandnormal>;
-	bootloader: bootloader{
-		enable_pad ="ce0";
-		busy_pad = "rb0";
-		timming_mode = "mode5";
-		bch_mode = "bch8_1k";
-		t_rea = <20>;
-		t_rhoh = <15>;
-		chip_num = <1>;
-		part_num = <0>;
-		rb_detect = <1>;
-	};
-	nandnormal: nandnormal{
-		enable_pad ="ce0";
-		busy_pad = "rb0";
-		timming_mode = "mode5";
-		bch_mode = "bch8_1k";
-		plane_mode = "twoplane";
-		t_rea = <20>;
-		t_rhoh = <15>;
-		chip_num = <2>;
-		part_num = <3>;
-		partition = <&nand_partitions>;
-		rb_detect = <1>;
-	};
-	nand_partitions:nand_partition{
-		/*
-		 * if bl_mode is 1, tpl size was generate by
-		 * fip_copies * fip_size which
-		 * will not skip bad when calculating
-		 * the partition size;
-		 *
-		 * if bl_mode is 0,
-		 * tpl partition must be comment out.
-		 */
-		tpl{
-			offset=<0x0 0x0>;
-			size=<0x0 0x0>;
-		};
-		logo{
-			offset=<0x0 0x0>;
-			size=<0x0 0x200000>;
-		};
-		recovery{
-			offset=<0x0 0x0>;
-			size=<0x0 0x1000000>;
-		};
-		boot{
-			offset=<0x0 0x0>;
-			size=<0x0 0x1000000>;
-		};
-		system{
-			offset=<0x0 0x0>;
-			size=<0x0 0x4000000>;
-		};
-		data{
-			offset=<0xffffffff 0xffffffff>;
-			size=<0x0 0x0>;
-		};
-	};
-};
-
 &pcie_A {
 	reset-gpio = <&gpio GPIOX_7 GPIO_ACTIVE_HIGH>;
 	status = "disable";
@@ -1794,20 +1411,9 @@
 	status = "okay";
 };
 
-&pinctrl_aobus {
-	dvb_s_ts0_pins: dvb_s_ts0_pins {
-		tsin_a {
-			groups = "tsin_a_sop_ao",
-				"tsin_a_valid_ao",
-				"tsin_a_clk_ao",
-				"tsin_a_din0_ao";
-			function = "tsin_a_ao";
-		};
-	};
-};
-
+/* No IR transmitter; its pin (GPIOAO_4) drives the A95X RGB light strip */
 &irblaster {
-	status = "okay";
+	status = "disabled";
 };
 
 &dummy_venc {
