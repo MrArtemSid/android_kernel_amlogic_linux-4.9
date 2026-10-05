@@ -113,6 +113,7 @@ dtb-y += sm1_s905d3_ac202_1g.dtb
 dtb-y += sm1_s905d3_radxa02.dtb
 dtb-y += sm1_s905d3_sabrina.dtb
 dtb-y += sm1_s905d3_skt.dtb
+dtb-y += sm1_s905x3_a95x_f3_air.dtb
 dtb-y += sm1_s905x3_ac212.dtb
 dtb-y += sm1_s905x3_ac213.dtb
 dtb-y += sm1_s905x3_ac213_buildroot.dtb

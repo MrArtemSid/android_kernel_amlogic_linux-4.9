@@ -1,0 +1,126 @@
+/*
+ * arch/arm64/boot/dts/amlogic/sm1_s905x3_a95x_f3_air.dts
+ *
+ * Copyright (C) 2017 Amlogic, Inc. All rights reserved.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+ * more details.
+ *
+ */
+
+/dts-v1/;
+
+#include "sm1_s905x3_ac2xx.dtsi"
+
+/ {
+	model = "A95X F3 Air";
+	amlogic-dt-id = "sm1_s905x3_a95xf3air";
+
+	memory@00000000 {
+		linux,usable-memory = <0x0 0x000000 0x0 0xf5700000>;
+	};
+
+	/*
+	 * Front panel VFD (FD628-compatible, stock "cyx-vfd").
+	 * Needs an out-of-tree OpenVFD driver.
+	 */
+	openvfd {
+		compatible = "open,vfd";
+		dev_name = "openvfd";
+		status = "okay";
+		openvfd_gpio_clk = <&gpio_ao GPIOAO_7 GPIO_ACTIVE_HIGH>;
+		openvfd_gpio_dat = <&gpio_ao GPIOAO_8 GPIO_ACTIVE_HIGH>;
+		openvfd_gpio_stb = <&gpio_ao GPIOAO_6 GPIO_ACTIVE_HIGH>;
+		openvfd_chars = [04 00 01 02 03];
+		openvfd_dot_bits = [00 01 02 03 04 05 06];
+		/* type 3, FD628 controller */
+		openvfd_display_type = <0x00000003>;
+	};
+};
+
+&cpu_opp_table0 {
+	opp07 {
+		opp-microvolt = <860000>;
+	};
+	opp08 {
+		opp-microvolt = <900000>;
+	};
+	opp09 {
+		opp-microvolt = <940000>;
+	};
+	/delete-node/ opp10;
+	/delete-node/ opp11;
+};
+
+&custom_maps{
+	mapnum = <1>;
+	map0 = <&map_0>;
+	map_0: map_0{
+		mapname = "a95xf3air-remote";
+		customcode = <0xdf00>;
+		release_delay = <80>;
+		size = <32>;	/*keymap size*/
+		/* keymap from the stock DTB */
+		keymap = <REMOTE_KEY(0x0c, KEY_0)
+			REMOTE_KEY(0x54, KEY_1)
+			REMOTE_KEY(0x16, KEY_2)
+			REMOTE_KEY(0x15, KEY_3)
+			REMOTE_KEY(0x50, KEY_4)
+			REMOTE_KEY(0x12, KEY_5)
+			REMOTE_KEY(0x11, KEY_6)
+			REMOTE_KEY(0x4c, KEY_7)
+			REMOTE_KEY(0x0e, KEY_8)
+			REMOTE_KEY(0x0d, KEY_9)
+			REMOTE_KEY(0x10, KEY_BACKSPACE)
+			REMOTE_KEY(0x1a, KEY_UP)
+			REMOTE_KEY(0x48, KEY_DOWN)
+			REMOTE_KEY(0x47, KEY_LEFT)
+			REMOTE_KEY(0x07, KEY_RIGHT)
+			REMOTE_KEY(0x06, KEY_ENTER)
+			REMOTE_KEY(0x4b, KEY_HANGEUL)
+			REMOTE_KEY(0x4f, KEY_HANJA)
+			REMOTE_KEY(0x1c, KEY_POWER)
+			REMOTE_KEY(0x42, KEY_HOME)
+			REMOTE_KEY(0x0a, KEY_BACK)
+			REMOTE_KEY(0x18, KEY_MENU)
+			REMOTE_KEY(0x5d, KEY_VOLUMEUP)
+			REMOTE_KEY(0x5c, KEY_VOLUMEDOWN)
+			REMOTE_KEY(0x4a, KEY_MUTE)
+			REMOTE_KEY(0x41, KEY_SCROLLLOCK)
+			REMOTE_KEY(0x01, KEY_AUX)
+			REMOTE_KEY(0x09, KEY_AUDIO)
+			REMOTE_KEY(0x5f, KEY_DIRECTORY)
+			REMOTE_KEY(0x5a, KEY_MEMO)
+			REMOTE_KEY(0x19, KEY_CALENDAR)
+			REMOTE_KEY(0x13, KEY_RED)>;
+	};
+};
+
+&ethmac {
+	status = "okay";
+	pinctrl-names = "internal_eth_pins";
+	pinctrl-0 = <&internal_eth_pins>;
+	mc_val = <0x4be04>;
+
+	internal_phy=<1>;
+};
+
+&sd_emmc_c {
+	emmc {
+		caps2 = "MMC_CAP2_HS200";
+		f_max = <100000000>;
+	};
+};
+
+&sd_emmc_a {
+	sdio {
+		f_max = <130000000>;
+	};
+};
