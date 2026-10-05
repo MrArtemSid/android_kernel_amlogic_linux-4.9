@@ -1,0 +1,171 @@
+/*
+ * arch/arm64/boot/dts/amlogic/sm1_s905x3_h96_max_x3.dts
+ *
+ * Copyright (C) 2017 Amlogic, Inc. All rights reserved.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+ * more details.
+ *
+ */
+
+/dts-v1/;
+
+#include "sm1_s905x3_ac2xx.dtsi"
+
+/ {
+	model = "H96 Max X3";
+	amlogic-dt-id = "sm1_s905x3_h96maxx3";
+
+	memory@00000000 {
+		linux,usable-memory = <0x0 0x000000 0x0 0xf0000000>;
+	};
+
+	/*
+	 * Front panel LED display (FD6551, two-wire, stock "fddis_dev").
+	 * Needs an out-of-tree OpenVFD driver.
+	 */
+	openvfd {
+		compatible = "open,vfd";
+		dev_name = "openvfd";
+		status = "okay";
+		openvfd_gpio_clk = <&gpio GPIOA_15 GPIO_ACTIVE_HIGH>;
+		openvfd_gpio_dat = <&gpio GPIOA_14 GPIO_ACTIVE_HIGH>;
+		openvfd_chars = [00 04 03 02 01];
+		openvfd_dot_bits = [00 01 03 02 04 05 06];
+		/* type 0, FD6551 controller */
+		openvfd_display_type = <0x06000000>;
+	};
+};
+
+&cpu_opp_table0 {
+	opp00 {
+		opp-microvolt = <800000>;
+	};
+	opp01 {
+		opp-microvolt = <800000>;
+	};
+	opp02 {
+		opp-microvolt = <800000>;
+	};
+	opp03 {
+		opp-microvolt = <820000>;
+	};
+	opp04 {
+		opp-microvolt = <840000>;
+	};
+	opp05 {
+		opp-microvolt = <860000>;
+	};
+	opp06 {
+		opp-microvolt = <880000>;
+	};
+	opp07 {
+		opp-microvolt = <900000>;
+	};
+	opp08 {
+		opp-microvolt = <920000>;
+	};
+	opp09 {
+		opp-microvolt = <940000>;
+	};
+	opp10 {
+		opp-microvolt = <970000>;
+	};
+	opp11 {
+		opp-microvolt = <1010000>;
+	};
+};
+
+&custom_maps{
+	mapnum = <1>;
+	map0 = <&map_0>;
+	map_0: map_0{
+		mapname = "h96maxx3-remote";
+		customcode = <0xfb04>;
+		release_delay = <80>;
+		size = <50>;	/*keymap size*/
+		/* keymap from the stock DTB */
+		keymap = <REMOTE_KEY(0x47, KEY_0)
+			REMOTE_KEY(0x13, KEY_1)
+			REMOTE_KEY(0x10, KEY_2)
+			REMOTE_KEY(0x11, KEY_3)
+			REMOTE_KEY(0x0f, KEY_4)
+			REMOTE_KEY(0x0c, KEY_5)
+			REMOTE_KEY(0x0d, KEY_6)
+			REMOTE_KEY(0x0b, KEY_7)
+			REMOTE_KEY(0x08, KEY_8)
+			REMOTE_KEY(0x09, KEY_9)
+			REMOTE_KEY(0x5c, KEY_RIGHTCTRL)
+			REMOTE_KEY(0x51, KEY_F3)
+			REMOTE_KEY(0x50, KEY_F4)
+			REMOTE_KEY(0x40, KEY_F5)
+			REMOTE_KEY(0x4d, KEY_F6)
+			REMOTE_KEY(0x43, KEY_F7)
+			REMOTE_KEY(0x17, KEY_F8)
+			REMOTE_KEY(0x00, KEY_F9)
+			REMOTE_KEY(0x01, KEY_F10)
+			REMOTE_KEY(0x16, KEY_F11)
+			REMOTE_KEY(0x49, KEY_BACKSPACE)
+			REMOTE_KEY(0x06, KEY_PROPS)
+			REMOTE_KEY(0x14, KEY_UNDO)
+			REMOTE_KEY(0x44, KEY_UP)
+			REMOTE_KEY(0x1d, KEY_DOWN)
+			REMOTE_KEY(0x1c, KEY_LEFT)
+			REMOTE_KEY(0x48, KEY_RIGHT)
+			REMOTE_KEY(0x53, KEY_LEFTMETA)
+			REMOTE_KEY(0x45, KEY_PAGEUP)
+			REMOTE_KEY(0x19, KEY_PAGEDOWN)
+			REMOTE_KEY(0x52, KEY_PAUSE)
+			REMOTE_KEY(0x05, KEY_HANGEUL)
+			REMOTE_KEY(0x59, KEY_HANJA)
+			REMOTE_KEY(0x1b, KEY_SCALE)
+			REMOTE_KEY(0x04, KEY_KPCOMMA)
+			REMOTE_KEY(0x1a, KEY_POWER)
+			REMOTE_KEY(0x0a, KEY_TAB)
+			REMOTE_KEY(0x0e, KEY_MUTE)
+			REMOTE_KEY(0x1f, KEY_HOME)
+			REMOTE_KEY(0x1e, KEY_FRONT)
+			REMOTE_KEY(0x07, KEY_COPY)
+			REMOTE_KEY(0x12, KEY_OPEN)
+			REMOTE_KEY(0x54, KEY_PASTE)
+			REMOTE_KEY(0x02, KEY_FIND)
+			REMOTE_KEY(0x4f, KEY_A)
+			REMOTE_KEY(0x42, KEY_B)
+			REMOTE_KEY(0x5d, KEY_C)
+			REMOTE_KEY(0x4c, KEY_D)
+			REMOTE_KEY(0x58, KEY_CUT)
+			REMOTE_KEY(0x55, KEY_CALC)>;
+	};
+};
+
+&dwc2_a {
+	port-type = <1>;	/** 0: otg, 1: host, 2: slave */
+	port-id-mode = <1>;	/** 0: hardware, 1: sw_host, 2: sw_slave*/
+};
+
+&ethmac {
+	status = "okay";
+	pinctrl-names = "external_eth_pins";
+	pinctrl-0 = <&external_eth_pins>;
+	mc_val = <0x1621>;
+	internal_phy = <0>;
+
+	/* Placeholder for U-Boot calibration */
+	auto_cali_idx = <0>;
+
+	/* reset */
+	rst_pin-gpios = <&gpio GPIOZ_15 GPIO_ACTIVE_LOW>;
+};
+
+&sd_emmc_c {
+	emmc {
+		/delete-property/ caps2;
+	};
+};
